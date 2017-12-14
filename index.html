@@ -75,6 +75,34 @@
 
   <script type="text/javascript">
 
+    function getInputs(ball, paddle){
+
+        return [
+            ball.x || 0 ,
+            ball.y || 0 ,
+            ball.dx || 0 ,
+            ball.dy || 0 ,
+            paddle.y || 0
+        ];
+
+    }
+
+    function move(output,paddle){
+
+        if(output[0] > 0.5){
+            paddle.moveDown();
+        }else {
+            paddle.stopMovingDown();
+        }
+
+        if(output[1] > 0.5){
+            paddle.moveUp();
+        }else {
+            paddle.stopMovingUp();
+        }
+
+    }
+
     /**
      * V1 ne fais que suivre la balle
      */
@@ -88,14 +116,7 @@
 
         var i = setInterval(function(){
 
-            input = [
-                ball.x || 0 ,
-                ball.y || 0 ,
-                ball.dx || 0 ,
-                ball.dy || 0 ,
-                paddle.y || 0
-            ];
-            var output = myNetwork.activate(input);
+            var output = myNetwork.activate( getInputs( ball,paddle ) );
 
             var position = paddle.y + paddle.height/2;
             var target = [
@@ -104,18 +125,8 @@
             ];
             myNetwork.propagate(1, target);
 
+            move(output,paddle)
 
-            if(output[0] > 0.5){
-                paddle.moveDown();
-            }else {
-                paddle.stopMovingDown();
-            }
-
-            if(output[1] > 0.5){
-                paddle.moveUp();
-            }else {
-                paddle.stopMovingUp();
-            }
 
         },10);
 
