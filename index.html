@@ -133,8 +133,51 @@
 
     }
 
-    function runIa(pong,side="right"){
-        v1(pong,side);
+
+    /**
+     * V2 intercept la ball en utilisant l'helper
+     */
+    function v2(pong,side="right"){
+
+        var myNetwork = new synaptic.Architect.Perceptron(5, 20, 2);
+        // var trainer = new synaptic.Trainer(myNetwork)
+        var cpt = 0;
+        var ball = pong.ball;
+        var paddle = pong[side+"Paddle"];
+
+        var target,output,position,pt;
+
+        var i = setInterval(function(){
+
+            output = myNetwork.activate( getInputs( ball,paddle ) );
+
+            position = paddle.y + paddle.height/2;
+
+            pt = Pong.Helper.ballIntercept(ball, {left: paddle.left, right: paddle.right, top: -10000, bottom: 10000}, ball.dx * 10, ball.dy * 10);
+
+            if (pt) {
+                target = [
+                    pt.y > position ? 1 : 0,
+                    pt.y < position ? 1 : 0
+                ];
+            }else {
+                target = [
+                    0,
+                    0
+                ];
+            }
+            myNetwork.propagate(1, target);
+
+            move(output,paddle)
+
+
+        },10);
+
+
+    }
+
+    function runIa(pong,side="left"){
+        v2(pong,side);
     }
 
 
@@ -161,7 +204,7 @@
     console.log(pong);
 
     setTimeout(function () {
-        runIa(pong);
+        runIa(pong,"left");
     }, 2000);
 
 
