@@ -1,12 +1,12 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Pong!</title> 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
-  <link href="pong.css" media="screen, print" rel="stylesheet" type="text/css" /> 
-</head> 
- 
-<body> 
+  <title>Pong!</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link href="pong.css" media="screen, print" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
 
   <div id="sidebar">
 
@@ -67,9 +67,66 @@
     </div>
   </canvas>
 
-  <script src="game.js" type="text/javascript"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
+
+  <script src="game.js" type="text/javascript"></script>
+
   <script src="pong.js" type="text/javascript"></script>
+
   <script type="text/javascript">
+
+    /**
+     * V1 ne fais que suivre la balle
+     */
+    function v1(pong,side="right"){
+
+        var myNetwork = new synaptic.Architect.Perceptron(5, 20, 2);
+        // var trainer = new synaptic.Trainer(myNetwork)
+        var cpt = 0;
+        var ball = pong.ball;
+        var paddle = pong[side+"Paddle"];
+
+        var i = setInterval(function(){
+
+            input = [
+                ball.x || 0 ,
+                ball.y || 0 ,
+                ball.dx || 0 ,
+                ball.dy || 0 ,
+                paddle.y || 0
+            ];
+            var output = myNetwork.activate(input);
+
+            var position = paddle.y + paddle.height/2;
+            var target = [
+                ball.y > position ? 1 : 0,
+                ball.y < position ? 1 : 0,
+            ];
+            myNetwork.propagate(1, target);
+
+
+            if(output[0] > 0.5){
+                paddle.moveDown();
+            }else {
+                paddle.stopMovingDown();
+            }
+
+            if(output[1] > 0.5){
+                paddle.moveUp();
+            }else {
+                paddle.stopMovingUp();
+            }
+
+        },10);
+
+
+    }
+
+    function runIa(pong,side="right"){
+        v1(pong,side);
+    }
+
+
   Game.ready(function() {
 
     var size        = document.getElementById('size');
@@ -90,8 +147,18 @@
     Game.addEvent(footprints,  'change', function() { pong.showFootprints(footprints.checked);   });
     Game.addEvent(predictions, 'change', function() { pong.showPredictions(predictions.checked); });
 
+    console.log(pong);
+
+    setTimeout(function () {
+        runIa(pong);
+    }, 2000);
+
+
   });
+
+
+
   </script>
 
-</body> 
+</body>
 </html>
