@@ -82,8 +82,8 @@ Pong = {
     if (!this.playing) {
       this.scores = [0, 0];
       this.playing = true;
-      this.rightPaddle.setAuto(numPlayers < 1, this.level(0));
-      this.leftPaddle.setAuto(numPlayers < 2, this.level(1));
+      this.leftPaddle.setAuto(numPlayers < 1, this.level(0));
+      this.rightPaddle.setAuto(numPlayers < 2, this.level(1));
       this.ball.reset();
       this.runner.hideCursor();
     }
