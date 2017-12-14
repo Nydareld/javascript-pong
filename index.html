@@ -98,11 +98,9 @@
     Game.addEvent(footprints,  'change', function() { pong.showFootprints(footprints.checked);   });
     Game.addEvent(predictions, 'change', function() { pong.showPredictions(predictions.checked); });
 
-    console.log(pong);
-
     setTimeout(function () {
-        v2(pong,"left");
-        v3(pong,"right")
+        v4(pong,"left");
+        vseb(pong,"right");
     }, 2000);
 
 
